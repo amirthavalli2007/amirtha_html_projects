@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshMart Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+    }
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background: #ffffff;
+      position: fixed;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .sidebar h2 {
+      color: green;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      padding: 10px 0;
+      cursor: pointer;
+    }
+    .sidebar ul li:hover {
+      color: green;
+    }
+    .main {
+      margin-left: 240px;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+    .card p {
+      font-size: 20px;
+      margin: 10px 0 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .box {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      height: 200px;
+    }
+  </style>
+</head>
+<body><div class="sidebar">
+  <h2>FreshMart</h2>
+  <ul>
+    <li>Dashboard</li>
+    <li>Sales</li>
+    <li>Products</li>
+    <li>Inventory</li>
+    <li>Customers</li>
+    <li>Suppliers</li>
+    <li>Reports</li>
+    <li>Settings</li>
+  </ul>
+</div><div class="main">
+  <div class="header">
+    <h2>Supermarket Dashboard</h2>
+    <div>
+      <input type="date">
+      <select>
+        <option>All Categories</option>
+      </select>
+    </div>
+  </div>  <div class="cards">
+    <div class="card">
+      <h3>Total Sales (Today)</h3>
+      <p>₹0</p>
+    </div>
+    <div class="card">
+      <h3>Total Customers</h3>
+      <p>0</p>
+    </div>
+    <div class="card">
+      <h3>Total Profit</h3>
+      <p>₹0</p>
+    </div>
+    <div class="card">
+      <h3>Total Orders</h3>
+      <p>0</p>
+    </div>
+  </div>  <div class="grid">
+    <div class="box">
+      <h3>Sales Overview</h3>
+      <p>(Chart Placeholder)</p>
+    </div>
+    <div class="box">
+      <h3>Category-wise Sales</h3>
+      <p>(Pie Chart Placeholder)</p>
+    </div>
+  </div>  <div class="grid">
+    <div class="box">
+      <h3>Top Selling Products</h3>
+      <p>Product 1<br>Product 2<br>Product 3</p>
+    </div>
+    <div class="box">
+      <h3>Recent Transactions</h3>
+      <p>No transactions yet</p>
+    </div>
+  </div></div></body>
+</html>

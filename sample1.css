@@ -1,0 +1,335 @@
+.a{
+    background-color: black;
+    background-image: url(butterfly.jpg);
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+.a h1{
+color:white;
+border-color: red;
+border-width: 10px;
+border-style: groove;
+background-color: black;
+border-radius: 50%;
+padding: 10px;
+margin-bottom: 10px;
+}
+.a p{
+    color: white;
+}
+.a img{
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    padding: 50px;
+}
+.b{
+    background-color: yellow;
+    color: red;
+    padding: 20px;
+    text-align: justify;
+    direction: rtl;
+    text-decoration:wavy;
+    text-transform: capitalize;
+    letter-spacing: 2px;
+    word-spacing: 4px;
+    line-height: 30px;
+    text-indent:10px;
+}
+.b h1{
+    text-shadow:3px 2px black;
+    text-transform: uppercase;
+}
+.c a:link{
+    color: black;
+}
+.c a:visited{
+    color:orangered;
+}
+.c a:hover{
+    color:chartreuse;
+}
+.c a:active{
+    color: crimson;
+}
+.d{
+    background-color: bisque;
+    width: 900px;
+    height: 200px;
+    list-style-position: inside;    
+}
+.d li{
+    display: flex;
+}
+ li::before{
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}li::before{
+    background-color: black;
+}
+table{
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    border: 2px solid blue;
+}
+th{
+    font-size: 30px;
+    background-color: yellow;
+    padding: 5px;
+}
+tr{
+    background-color: cyan;
+    padding: 15px;
+}
+tr:hover{
+    background-color: blue;
+}
+tr:nth-child(even){
+    background-color: blueviolet;
+}
+.f{
+    background-color: black;
+    color: white;
+    position: sticky;
+    top: 0%;
+    padding: 20px;
+    width: 100%;
+}
+.g{
+    background-color: black;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    left:0;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+}
+.i{
+    background-color: black;
+    width: 100%;
+    height: 500px;
+    color: white;
+    padding: 20px;
+}
+.i h1{
+    text-align: center;
+    margin-bottom: 40px;
+}
+.i img{
+    float: left;
+    width: 500px;
+    height: 300x;
+    margin-left: 20px;
+    margin-right: 40px;
+}
+.h{
+    text-align: center;
+}
+.n{
+    background-color: green;
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+}
+.menu{
+    margin-top: 10px;
+    background-color: rgb(63, 129, 243);
+    text-align: center;
+    width: 33.33%;
+    height: 200px;
+    float: left;
+     margin-bottom: 15px;
+}
+.content{
+    margin-top: 10px;
+    background-color: rgb(110, 202, 244);
+    text-align:center;
+    width: 33.33%;
+    height: 200px;
+    float: left;
+    margin-bottom: 15px;
+}
+.slidebar{
+    margin-top: 10px;
+    background-color: orange;
+    text-align: center;
+    width:33.33%;
+    height: 200px;
+    float: left;
+     margin-bottom: 15px;
+
+}
+.foot{
+    clear: both;
+    background-color: orange;
+    width: 100%;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
+#many >p::first-line{
+    color: blue;
+    font-weight: bold;
+    font-size: 25px;
+}
+#many>h2::after{
+    content: " easy";
+}
+#many>h2::before{
+    content:"section:";
+}
+::selection{
+    color: red;
+    font-size: 30px;
+    background-color: chartreuse;
+}
+.opacity>img{
+    width: 800px;
+    opacity: .5;
+    border-radius: 50%;
+}
+.opacity{
+    background-color: white;
+    width: 800px;
+    border-radius: 50%;
+}
+.opacity>img:hover{
+    opacity: 1;
+}
+span[title]{
+    color: chocolate;
+}
+[class|="content"]{
+    color: blueviolet;
+}
+[class^="content"]{
+    color: aquamarine;
+}
+[class*="srilanka"]{
+    color: chartreuse;
+}
+[class*="-"]{
+    color: crimson;
+}
+input[type="text"]{
+    width: 100%;
+    background-color: rgba(220, 232, 255, 0.666);
+    border-radius: 5px;
+    padding: 20px;
+    box-sizing: border-box;
+    margin: 5px 0;
+    border: 1px solid black;
+}
+form{
+    background-color: blueviolet;
+    padding: 10px;
+}
+input[type="submit"]{
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: greenyellow;
+    margin: 5px 0;
+}
+input[type="submit"]:hover{
+    background-color: green;
+    cursor: pointer;
+
+}
+body{
+    counter-reset:videos;
+}
+.j h1::before{
+      counter-increment: videos;
+      content: "videos #" counter(videos) ":";
+      color: white;
+}
+.j{
+    background-color: rgb(246, 153, 32);
+}
+@media screen and (max-width:1000px) {
+    body{
+        background-color:rgb(248, 14, 61)
+    }
+}
+@media screen and (max-width:900px){
+    body{
+        background-color: rgb(204, 158, 248);
+    }
+}
+@media screen and (max-width:700px){
+    body{
+        background-color: rgb(201, 240, 162);
+    }
+}
+@media screen and (max-width:1000px){
+    body{
+    }
+}
+.flexbox{
+    background-color: rgb(254, 72, 22);
+    display:flex;
+    text-align: center;
+    flex-direction :row;
+    flex-wrap: wrap;
+
+    justify-content:center;
+    align-items:center;
+    
+}
+.flexbox > div{
+    background-color: rgb(245, 245, 245);
+    margin: 10px;
+    padding: 30px;
+}
+header{
+    background-color: orangered;
+    padding: 20px;
+    border: 1px solid black;
+}
+.con{
+    background-color: chartreuse;
+    padding: 20px;
+    border: 1px solid black;
+}
+.me{
+    background-color: cyan;
+    padding: 20px;
+    border: 1px solid black;
+    flex-basis: 400px;
+}
+.slide{
+    background-color: rgb(241, 88, 188);
+    padding: 20px;
+    border: 1px solid black;
+    flex-basis: 400px;
+}
+footer{
+    background-color: #fcf80a;
+    padding: 20px;
+    border: 1px solid black;
+}
+.u{
+    background-color: hsl(33, 100%, 88%);
+    text-align: center;
+    border: 1px solid black;
+}
+.k{
+    display: flex;
+    
+}
+.l{
+    border: none;
+    text-align: center;
+}
+.p{
+    border-bottom:2px solid black;
+}
+

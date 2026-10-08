@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo</title>
+</head>
+<body>
+    <h1 id="title">Hello World</h1>
+    <button onclick="change()">Change</button>
+    <input id="num1">
+    <input id="num2">
+    <button onclick="add()">clickme</button>
+    <p id="result">result</p>
+    <hr>
+    <div id="box"></div>
+    <button onclick="color()">change color</button>
+    <hr>
+    <input id="in" onkeyup="enter()">
+    <h1 id="h1"></h1>
+    <hr>
+    <button id="bu" onclick="changecolor()">change color</button>
+    <hr>
+    <h1 id="n">Name</h1>
+    <button onclick="update(event)">John</button>
+    <button onclick="update(event)">ram</button>
+    <button onclick="update(event)">ravi</button>
+    <hr>
+    <h1>if i click it will delete</h1>
+    <h1 onclick="deleted(event)">one</h1>
+    <h1  onclick="deleted(event)">two</h1>
+    <h1  onclick="deleted(event)">three</h1>
+    <h1  onclick="deleted(event)">four</h1>
+    <h1  onclick="deleted(event)">five</h1>
+    <h1  onclick="deleted(event)">six</h1>
+    <h1  onclick="deleted(event)">seven</h1>
+    <h1  onclick="deleted(event)">eight</h1>
+    <h1  onclick="deleted(event)">nine</h1>
+    <h1  onclick="deleted(event)">ten</h1>
+    <hr>
+     <div id="d">hello</div>
+     <h1 class="a">one</h1>
+   <h1 class="a">two</h1>
+   <h1 class="a">three</h1>
+    <style>
+        /*div{
+            background-color: black;
+            width: 100px;
+            height: 100px;
+            transition: 2s;
+         }
+            */
+         .widthmax{
+            width: 800px;
+         }
+    </style>
+    <script>
+        var head=document.getElementById("title")
+        console.log(head.textContent)
+        
+        function change(){
+            head.textContent="Bye World"
+        }
+        var box1=document.getElementById("num1")
+          var box2=document.getElementById("num2")
+          var r=document.getElementById("result")
+        function add(){
+             
+          box1value=Number(box1.value)
+          box2value=Number(box2.value)
+          var total=box1value+box2value
+            r.textContent=total
+        }
+
+        var box=document.getElementById("box")
+        function color(){
+            box.setAttribute("class","widthmax")
+        }
+        var inp=document.getElementById("in")
+        var h1=document.getElementById("h1")
+        function enter(){
+            h1.textContent=inp.value
+        }
+        var bu=document.getElementById("bu")
+        function changecolor(){
+            bu.style.backgroundColor="red"
+        }
+         var h=document.getElementById("n")
+        function update(event)
+        {
+            h.textContent=event.target.textContent
+        }
+       var del=document.getElementById("d")
+       function deleted(event){
+          event.target.remove()}
+           var d=document.getElementById("d")
+        d.innerHTML="<h1>bye</h1>"
+        
+       
+    </script>
+</body>
+</html>

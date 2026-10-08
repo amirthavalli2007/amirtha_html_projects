@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Karuppasami Smart Dashboard</title>
+
+<style>
+body {
+    margin:0;
+    font-family: 'Poppins', sans-serif;
+    background:#f9fafb;
+}
+
+/* HEADER */
+.header {
+    padding:20px;
+    font-size:24px;
+    font-weight:bold;
+    color:#111827;
+}
+
+/* CONTAINER */
+.container {
+    padding:20px;
+}
+
+/* KPI GRID */
+.kpi {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+    gap:15px;
+}
+
+/* CARDS */
+.card {
+    padding:15px;
+    border-radius:15px;
+    color:white;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* COLORS */
+.sales { background:#6366f1; }
+.profit { background:#10b981; }
+.stock { background:#f59e0b; }
+.qr { background:#3b82f6; }
+.cash { background:#ef4444; }
+.total { background:#8b5cf6; }
+.today { background:#14b8a6; }
+
+/* SECTION */
+.section {
+    margin-top:25px;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.08);
+}
+
+/* INPUT */
+input, select, button {
+    padding:8px;
+    margin:5px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+button {
+    background:#6366f1;
+    color:white;
+    border:none;
+}
+
+button:hover {
+    background:#4f46e5;
+}
+
+/* TABLE */
+table {
+    width:100%;
+    border-collapse:collapse;
+}
+
+th {
+    background:#f3f4f6;
+}
+
+th, td {
+    padding:10px;
+    border:1px solid #eee;
+    text-align:center;
+}
+
+tr:hover {
+    background:#f9fafb;
+}
+
+/* LOW STOCK */
+.low {
+    color:red;
+    font-weight:bold;
+}
+
+/* CHART */
+canvas {
+    width:100%;
+    height:300px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+🏪 Karuppasami Irumbu Kadai Dashboard
+</div>
+
+<div class="container">
+
+<!-- FILTER -->
+<div>
+Category:
+<select id="category">
+<option>All</option>
+<option>Steel</option>
+<option>Plastic</option>
+<option>Rope</option>
+<option>Agriculture</option>
+<option>Animal</option>
+<option>Tools</option>
+<option>Construction</option>
+<option>Marriage</option>
+</select>
+
+<button onclick="filterData()">Apply</button>
+</div>
+
+<!-- KPI -->
+<div class="kpi">
+<div class="card sales"><h2 id="sales">₹0</h2><p>Sales</p></div>
+<div class="card profit"><h2 id="profit">₹0</h2><p>Profit</p></div>
+<div class="card stock"><h2 id="stock">0</h2><p>Stock</p></div>
+<div class="card qr"><h2 id="upi">₹0</h2><p>QR</p></div>
+<div class="card cash"><h2 id="cash">₹0</h2><p>Cash</p></div>
+<div class="card total"><h2 id="total">₹0</h2><p>Total</p></div>
+<div class="card today"><h2 id="todayQR">₹0</h2><p>Today</p></div>
+</div>
+
+<!-- PAYMENT -->
+<div class="section">
+<h3>Payment Entry</h3>
+
+<input type="date" id="payDate">
+<input type="number" id="payAmount" placeholder="Amount">
+
+<select id="mode">
+<option>QR</option>
+<option>Cash</option>
+</select>
+
+<button onclick="addPayment()">Add Payment</button>
+</div>
+
+<!-- CHART -->
+<div class="section">
+<h3>Category Sales</h3>
+<canvas id="chart"></canvas>
+</div>
+
+<!-- TABLE -->
+<div class="section">
+<h3>Inventory</h3>
+
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Category</th>
+<th>Stock</th>
+<th>Profit</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+// PAYMENT
+let qrTotal=0;
+let cashTotal=0;
+let dailyQR={};
+let dailyCash={};
+
+// DATA
+const data = [
+
+    // STEEL / HARDWARE
+    {name:"Steel Rod",cat:"Steel",stock:30,cost:200,price:320,sales:15000},
+    {name:"Iron Sheet",cat:"Steel",stock:20,cost:500,price:800,sales:14000},
+    {name:"Steel Pipe",cat:"Steel",stock:18,cost:350,price:600,sales:12000},
+    {name:"Stainless Kadai",cat:"Steel",stock:15,cost:500,price:800,sales:12000},
+    {name:"Steel Plate Set",cat:"Steel",stock:25,cost:200,price:350,sales:9000},
+
+    // PLASTIC
+    {name:"Plastic Bucket",cat:"Plastic",stock:50,cost:80,price:150,sales:6000},
+    {name:"Water Bottle",cat:"Plastic",stock:70,cost:40,price:80,sales:4000},
+    {name:"Storage Drum",cat:"Plastic",stock:20,cost:400,price:700,sales:9000},
+    {name:"Plastic Mug",cat:"Plastic",stock:60,cost:20,price:50,sales:3000},
+    {name:"Plastic Basket",cat:"Plastic",stock:40,cost:100,price:200,sales:7000},
+
+    // ROPE
+    {name:"Nylon Rope",cat:"Rope",stock:8,cost:150,price:300,sales:9000},
+    {name:"Coir Rope",cat:"Rope",stock:5,cost:100,price:200,sales:4000},
+    {name:"Heavy Duty Rope",cat:"Rope",stock:6,cost:250,price:450,sales:6000},
+
+    // AGRICULTURE
+    {name:"Sprayer",cat:"Agriculture",stock:4,cost:1000,price:1500,sales:18000},
+    {name:"Cultivator",cat:"Agriculture",stock:5,cost:1200,price:1800,sales:14000},
+    {name:"Farming Fork",cat:"Agriculture",stock:10,cost:400,price:700,sales:8000},
+    {name:"Hoe Tool",cat:"Agriculture",stock:12,cost:300,price:600,sales:7000},
+    {name:"Spade",cat:"Agriculture",stock:9,cost:350,price:650,sales:7500},
+    {name:"Seed Drill",cat:"Agriculture",stock:3,cost:2500,price:3500,sales:20000},
+
+    // ANIMAL CARE
+    {name:"Dog Chain",cat:"Animal",stock:12,cost:150,price:300,sales:5000},
+    {name:"Cow Rope",cat:"Animal",stock:6,cost:200,price:350,sales:7000},
+    {name:"Cattle Feeding Bucket",cat:"Animal",stock:10,cost:300,price:600,sales:8000},
+    {name:"Poultry Cage",cat:"Animal",stock:7,cost:800,price:1200,sales:9000},
+    {name:"Water Feeder",cat:"Animal",stock:14,cost:250,price:500,sales:6500},
+
+    // TOOLS
+    {name:"Axe",cat:"Tools",stock:7,cost:500,price:900,sales:8500},
+    {name:"Knife",cat:"Tools",stock:20,cost:100,price:250,sales:6000},
+    {name:"Measuring Tape",cat:"Tools",stock:18,cost:120,price:250,sales:5500},
+    {name:"Hammer",cat:"Tools",stock:16,cost:200,price:400,sales:7000},
+    {name:"Screwdriver Set",cat:"Tools",stock:12,cost:300,price:600,sales:7500},
+
+    // CONSTRUCTION
+    {name:"PVC Pipe",cat:"Construction",stock:25,cost:300,price:600,sales:15000},
+    {name:"Cement Pan",cat:"Construction",stock:12,cost:250,price:500,sales:7000},
+    {name:"Trowel",cat:"Construction",stock:15,cost:150,price:300,sales:5000},
+    {name:"Sand Sieve",cat:"Construction",stock:10,cost:400,price:700,sales:8000},
+    {name:"Concrete Mixer Tool",cat:"Construction",stock:3,cost:5000,price:7000,sales:25000},
+
+    // MARRIAGE / EVENTS
+    {name:"Serving Plates",cat:"Marriage",stock:10,cost:1000,price:1800,sales:12000},
+    {name:"Decoration Lights",cat:"Marriage",stock:8,cost:500,price:900,sales:7000},
+    {name:"Large Cooking Vessel",cat:"Marriage",stock:5,cost:3000,price:5000,sales:20000},
+    {name:"Water Drum (Large)",cat:"Marriage",stock:6,cost:800,price:1400,sales:9000},
+    {name:"Banana Leaf Plates Pack",cat:"Marriage",stock:20,cost:200,price:400,sales:6000}
+
+];
+
+function filterData(){
+let cat=document.getElementById("category").value;
+let filtered=data.filter(d=>cat==="All"||d.cat===cat);
+loadDashboard(filtered);
+}
+
+function loadDashboard(dataset){
+let sales=0, profit=0, stock=0;
+let table=document.getElementById("table");
+table.innerHTML="";
+
+let catSales={};
+
+dataset.forEach(d=>{
+let p=(d.price-d.cost)*d.stock;
+
+sales+=d.sales;
+profit+=p;
+stock+=d.stock;
+
+catSales[d.cat]=(catSales[d.cat]||0)+d.sales;
+
+table.innerHTML+=`
+<tr>
+<td>${d.name}</td>
+<td>${d.cat}</td>
+<td class="${d.stock<10?'low':''}">${d.stock}</td>
+<td>₹${p}</td>
+</tr>`;
+});
+
+document.getElementById("sales").innerText="₹"+sales;
+document.getElementById("profit").innerText="₹"+profit;
+document.getElementById("stock").innerText=stock;
+
+updatePayments();
+drawChart(catSales);
+}
+
+function addPayment(){
+let amt=Number(document.getElementById("payAmount").value);
+let date=document.getElementById("payDate").value;
+let mode=document.getElementById("mode").value;
+
+if(!amt||!date)return;
+
+if(mode==="QR"){
+qrTotal+=amt;
+if(!dailyQR[date])dailyQR[date]=0;
+dailyQR[date]+=amt;
+}else{
+cashTotal+=amt;
+if(!dailyCash[date])dailyCash[date]=0;
+dailyCash[date]+=amt;
+}
+
+updatePayments();
+}
+
+function updatePayments(){
+document.getElementById("upi").innerText="₹"+qrTotal;
+document.getElementById("cash").innerText="₹"+cashTotal;
+document.getElementById("total").innerText="₹"+(qrTotal+cashTotal);
+
+let today=new Date().toISOString().split("T")[0];
+let t=(dailyQR[today]||0)+(dailyCash[today]||0);
+
+document.getElementById("todayQR").innerText="₹"+t;
+}
+
+function drawChart(obj){
+let canvas=document.getElementById("chart");
+let ctx=canvas.getContext("2d");
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+let max=Math.max(...Object.values(obj));
+let x=50;
+
+for(let k in obj){
+let h=(obj[k]/max)*200;
+
+ctx.fillStyle="#6366f1";
+ctx.fillRect(x,250-h,40,h);
+
+ctx.fillStyle="#111";
+ctx.fillText(k,x,270);
+
+x+=80;
+}
+}
+
+loadDashboard(data);
+
+</script>
+
+</body>
+</html>

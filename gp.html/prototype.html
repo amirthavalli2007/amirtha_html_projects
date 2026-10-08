@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Karuppasami Irumbu Kadai Dashboard</title>
+
+    <style>
+        body { font-family: Arial; margin: 0; background: #eef2f7; }
+
+        .header {
+            background: #1f3a5f;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .container { padding: 20px; }
+
+        select, input, button {
+            padding: 6px;
+            margin: 5px;
+        }
+
+        .kpi {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            width: 160px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            margin-top: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .low { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+
+        canvas {
+            width: 100%;
+            height: 320px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Karuppasami Irumbu Kadai</h1>
+    <p>Multi-Purpose Rural Shop Dashboard</p>
+</div>
+
+<div class="container">
+
+    <!-- FILTER -->
+    <div>
+        <b>Category:</b>
+        <select id="category">
+            <option>All</option>
+            <option>Steel</option>
+            <option>Plastic</option>
+            <option>Rope</option>
+            <option>Agriculture</option>
+            <option>Animal</option>
+            <option>Tools</option>
+            <option>Construction</option>
+            <option>Marriage</option>
+        </select>
+        <button onclick="filterData()">Apply</button>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi">
+        <div class="card"><h2 id="sales">₹0</h2><p>Total Sales</p></div>
+        <div class="card"><h2 id="profit">₹0</h2><p>Total Profit</p></div>
+        <div class="card"><h2 id="stock">0</h2><p>Total Stock</p></div>
+        <div class="card"><h2 id="lowStock">0</h2><p>Low Stock</p></div>
+        <div class="card"><h2 id="topItem">-</h2><p>Top Product</p></div>
+        <div class="card"><h2 id="upi">₹0</h2><p>Total QR</p></div>
+        <div class="card"><h2 id="todayQR">₹0</h2><p>Today QR</p></div>
+    </div>
+
+    <!-- QR ENTRY -->
+    <div class="section">
+        <h3>QR Payment Entry</h3>
+
+        Date: <input type="date" id="qrDate">
+        Amount: <input type="number" id="qrAmount">
+
+        <button onclick="addPayment()">Add Payment</button>
+
+        <p id="msg" class="success"></p>
+    </div>
+
+    <!-- DAILY QR TABLE -->
+    <div class="section">
+        <h3>Daily QR Report</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Total QR Amount</th>
+                </tr>
+            </thead>
+            <tbody id="qrTable"></tbody>
+        </table>
+    </div>
+
+    <!-- CHART -->
+    <div class="section">
+        <h3>Category Sales</h3>
+        <canvas id="chart"></canvas>
+    </div>
+
+    <!-- TABLE -->
+    <div class="section">
+        <h3>Inventory</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Cost</th>
+                    <th>Price</th>
+                    <th>Profit</th>
+                </tr>
+            </thead>
+            <tbody id="table"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+
+// QR DATA
+let upiTotal = 0;
+let dailyQR = {};
+
+// FULL INVENTORY DATA
+const data = [
+
+    {name:"Steel Rod", cat:"Steel", stock:30, cost:200, price:320, sales:15000},
+    {name:"Stainless Kadai", cat:"Steel", stock:15, cost:500, price:800, sales:12000},
+    {name:"Large Cooking Vessel", cat:"Marriage", stock:5, cost:3000, price:5000, sales:20000},
+
+    {name:"Bucket", cat:"Plastic", stock:50, cost:80, price:150, sales:6000},
+    {name:"Storage Drum", cat:"Plastic", stock:20, cost:400, price:700, sales:9000},
+
+    {name:"Nylon Rope", cat:"Rope", stock:8, cost:150, price:300, sales:9000},
+    {name:"Coir Rope", cat:"Rope", stock:5, cost:100, price:200, sales:4000},
+
+    {name:"Sprayer", cat:"Agriculture", stock:4, cost:1000, price:1500, sales:18000},
+    {name:"Cultivator", cat:"Agriculture", stock:5, cost:1200, price:1800, sales:14000},
+    {name:"Farming Fork", cat:"Agriculture", stock:10, cost:400, price:700, sales:8000},
+
+    {name:"Dog Chain", cat:"Animal", stock:12, cost:150, price:300, sales:5000},
+    {name:"Cow Rope", cat:"Animal", stock:6, cost:200, price:350, sales:7000},
+    {name:"Cattle Bucket", cat:"Animal", stock:10, cost:300, price:600, sales:8000},
+
+    {name:"Axe", cat:"Tools", stock:7, cost:500, price:900, sales:8500},
+    {name:"Knife", cat:"Tools", stock:20, cost:100, price:250, sales:6000},
+    {name:"Measuring Tape", cat:"Tools", stock:18, cost:120, price:250, sales:5500},
+
+    {name:"PVC Pipe", cat:"Construction", stock:25, cost:300, price:600, sales:15000},
+    {name:"Cement Pan", cat:"Construction", stock:12, cost:250, price:500, sales:7000},
+    {name:"Trowel", cat:"Construction", stock:15, cost:150, price:300, sales:5000},
+
+    {name:"Serving Plates", cat:"Marriage", stock:10, cost:1000, price:1800, sales:12000},
+    {name:"Decoration Lights", cat:"Marriage", stock:8, cost:500, price:900, sales:7000}
+];
+
+function filterData(){
+    let cat = document.getElementById("category").value;
+    let filtered = data.filter(d => cat === "All" || d.cat === cat);
+    loadDashboard(filtered);
+}
+
+function loadDashboard(dataset){
+    let sales=0, profit=0, stock=0, low=0;
+    let top={name:"", sales:0};
+
+    let table = document.getElementById("table");
+    table.innerHTML="";
+
+    let catSales={};
+
+    dataset.forEach(d=>{
+        let p=(d.price-d.cost)*d.stock;
+
+        sales+=d.sales;
+        profit+=p;
+        stock+=d.stock;
+
+        if(d.stock<10) low++;
+
+        if(d.sales>top.sales) top=d;
+
+        catSales[d.cat]=(catSales[d.cat]||0)+d.sales;
+
+        table.innerHTML+=`
+        <tr>
+            <td>${d.name}</td>
+            <td>${d.cat}</td>
+            <td class="${d.stock<10?'low':''}">${d.stock}</td>
+            <td>₹${d.cost}</td>
+            <td>₹${d.price}</td>
+            <td>₹${p}</td>
+        </tr>`;
+    });
+
+    document.getElementById("sales").innerText="₹"+sales;
+    document.getElementById("profit").innerText="₹"+profit;
+    document.getElementById("stock").innerText=stock;
+    document.getElementById("lowStock").innerText=low;
+    document.getElementById("topItem").innerText=top.name;
+    document.getElementById("upi").innerText="₹"+upiTotal;
+
+    updateTodayQR();
+    drawChart(catSales);
+}
+
+function addPayment(){
+    let amt = Number(document.getElementById("qrAmount").value);
+    let date = document.getElementById("qrDate").value;
+
+    if(!amt || amt<=0 || !date){
+        document.getElementById("msg").innerText="Enter valid details!";
+        return;
+    }
+
+    upiTotal += amt;
+
+    if(!dailyQR[date]){
+        dailyQR[date]=0;
+    }
+    dailyQR[date]+=amt;
+
+    document.getElementById("msg").innerText="Added ₹"+amt;
+    document.getElementById("upi").innerText="₹"+upiTotal;
+
+    updateDailyTable();
+    updateTodayQR();
+
+    document.getElementById("qrAmount").value="";
+}
+
+function updateDailyTable(){
+    let table=document.getElementById("qrTable");
+    table.innerHTML="";
+
+    for(let d in dailyQR){
+        table.innerHTML+=`
+        <tr>
+            <td>${d}</td>
+            <td>₹${dailyQR[d]}</td>
+        </tr>`;
+    }
+}
+
+function updateTodayQR(){
+    let today=new Date().toISOString().split("T")[0];
+    let amt=dailyQR[today]||0;
+    document.getElementById("todayQR").innerText="₹"+amt;
+}
+
+function drawChart(obj){
+    let canvas=document.getElementById("chart");
+    let ctx=canvas.getContext("2d");
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    let values=Object.values(obj);
+    let max=Math.max(...values);
+
+    let x=60;
+
+    for(let k in obj){
+        let val=obj[k];
+        let h=(val/max)*200;
+
+        ctx.fillStyle="#3498db";
+        ctx.fillRect(x,250-h,50,h);
+
+        ctx.fillStyle="black";
+        ctx.fillText(k,x,270);
+        ctx.fillText("₹"+val,x,240-h);
+
+        x+=100;
+    }
+}
+
+loadDashboard(data);
+
+</script>
+
+</body>
+</html>
